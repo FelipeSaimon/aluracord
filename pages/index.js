@@ -1,5 +1,7 @@
 import { Box, Button, Text, TextField, Image } from '@skynexui/components';
+import React from 'react';
 import appConfig from  '../config.json';
+import { useRouter } from 'next/router'
 
 //isso é um componente react - uma função que retorna um trecho html
 function GlobalStyle() {
@@ -69,8 +71,12 @@ function Title(props){
 export default HomePage*/
 
 export default function PaginaInicial() {
-    const username = 'FelipeSaimon';
-  
+    //const username = 'FelipeSaimon';
+    /*o setUsername altera o estado atual do navegador */
+    const [username, setUsername] = React.useState(''); //State o React (atualiza a tela a cada digitação (estado))
+    const roteamento = useRouter();
+
+    console.log('UseState', username)
     return (
       <>
         <GlobalStyle />
@@ -100,6 +106,16 @@ export default function PaginaInicial() {
             {/* Formulário */}
             <Box
               as="form"
+
+              onSubmit={function(event){
+                event.preventDefault();
+                console.log('Submetido')
+                roteamento.push('/chat')
+                //Jeito mais cru e tradicional de pular pags
+                //Mas ele recarrega a tela
+                //window.location.href = '/chat'
+              }}
+
               styleSheet={{
                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                 width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px',
@@ -110,7 +126,39 @@ export default function PaginaInicial() {
                 {appConfig.name}
               </Text>
   
-              <TextField
+              {/*No react quando voce insere o atributo
+              value, ele para de funcionar (o input) ja que
+              o react trabalha com estados*/}
+
+              {/* <input 
+                type="text" 
+                value={username}
+
+                  //Primeiro param é o evento de digitar do usuario
+                  //para pegar o valor do event é preciso pegar o target (elemento) => valor do elemento
+                  onChange={function evento(event){
+                    console.log('usuario digitou', event.target.value)
+                    // Onde está o valor 
+                    const valor = event.target.value;
+                    // Trocar o valor da variável 'username'
+                    setUsername(valor);
+
+
+
+                  }}             
+                /> */}
+              {<TextField
+                value={username}
+                //Primeiro param é o evento de digitar do usuario
+                //para pegar o valor do event é preciso pegar o target (elemento) => valor do elemento
+                onChange={function evento(event){
+                  console.log('usuario digitou', event.target.value)
+                  // Onde está o valor 
+                  const valor = event.target.value;
+                  // Trocar o valor da variável 'username'
+                  setUsername(valor);
+                 }}
+
                 fullWidth
                 textFieldColors={{
                   neutral: {
@@ -120,7 +168,7 @@ export default function PaginaInicial() {
                     backgroundColor: appConfig.theme.colors.neutrals[800],
                   },
                 }}
-              />
+              />}
               <Button
                 type='submit'
                 label='Entrar'
