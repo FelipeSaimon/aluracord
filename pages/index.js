@@ -70,10 +70,11 @@ export default function PaginaInicial() {
               },
               width: '100%', maxWidth: '700px',
               borderRadius: '5px', padding: '32px', margin: '16px',
-              boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
-              backgroundColor: appConfig.theme.colors.neutrals[700],
+              boxShadow: '0 2px 10px 0 rgb(0 0 0)',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
             }}
           >
+
             {/* Formulário */}
             <Box
               as="form"
@@ -122,13 +123,15 @@ export default function PaginaInicial() {
                 value={username}
                 //Primeiro param é o evento de digitar do usuario
                 //para pegar o valor do event é preciso pegar o target (elemento) => valor do elemento
+
+                
                 onChange={function evento(event){
                   console.log('usuario digitou', event.target.value)
                   // Onde está o valor 
                   const valor = event.target.value;
                   // Trocar o valor da variável 'username'
                   setUsername(valor);
-                 }}
+                }}
 
                 fullWidth
                 textFieldColors={{
@@ -143,6 +146,7 @@ export default function PaginaInicial() {
               <Button
                 type='submit'
                 label='Entrar'
+
                 fullWidth
                 buttonColors={{
                   contrastColor: appConfig.theme.colors.neutrals["000"],
