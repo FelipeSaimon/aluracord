@@ -132,22 +132,32 @@ export default function ChatPage() {
                             }}
 
                         />
-                        <button
-                            
-                            
+                       <Button iconName="arrowRight" 
+
+
                             onChange={(e) =>{
                                 const msg = e.target.value;
                                 setMensagem(msg)
                             }}
 
                             onClick={(event) => {
-                                console.log(event)
                                 event.preventDefault()
                                 novaMensagem(mensagem);
                             }}
                             
-
-                        >enviar</button>
+                            styleSheet={{
+                                width: "10%",
+                                height: "83%",
+                                marginBottom: "7px"
+                              }}
+                              
+                              buttonColors={{
+                                contrastColor: appConfig.theme.colors.neutrals["900"], //cor do texto do botão
+                                mainColor: appConfig.theme.colors.primary['050'], //cor principal do botão
+                                mainColorLight: appConfig.theme.colors.primary['700'], //esse n sei bem sorry
+                                mainColorStrong: appConfig.theme.colors.primary['200'], //cor do hover se n me engano
+                              }}
+                        />
                         
                     </Box>
                 </Box>
@@ -175,6 +185,7 @@ function Header() {
 }
 
 function MessageList(props) {
+    const [excluido, setExcluido] = React.useState('');
     console.log('MessageList', props.ListaMensagens);
     return (
         <Box
@@ -230,10 +241,33 @@ function MessageList(props) {
                             >
                                 {(new Date().toLocaleDateString())}
                             </Text>
+                            <Button label="apagar" 
+                                onClick={(e) =>{
+                                        this.mensagem({mensagem: this.mensagem.filter(function(mensagem) { 
+                                            return mensagem !== e.target.value 
+                                        })});
+                                    }
+                                }
+
+                                styleSheet={{
+                                    width: "10%",
+                                    height: "63%",
+                                    marginBottom: "4px"
+                                  }}
+                                  
+                                  buttonColors={{
+                                    contrastColor: appConfig.theme.colors.neutrals["900"], //cor do texto do botão
+                                    mainColor: appConfig.theme.colors.primary['050'], //cor principal do botão
+                                    mainColorLight: appConfig.theme.colors.primary['700'], //esse n sei bem sorry
+                                    mainColorStrong: appConfig.theme.colors.primary['200'], //cor do hover se n me engano
+                                  }}
+                            />
                         </Box>
                         {mensagem.text}
+                        
                     </Text>
                 )
+                
             })}
             
         </Box>
