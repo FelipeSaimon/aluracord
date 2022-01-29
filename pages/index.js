@@ -86,7 +86,11 @@ export default function PaginaInicial() {
                 //Jeito mais cru e tradicional de pular pags
                 //Mas ele recarrega a tela
                 //window.location.href = '/chat'
+
               }}
+
+
+              
 
               styleSheet={{
                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',

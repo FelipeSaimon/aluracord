@@ -1,6 +1,20 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components';
+import { createClient } from '@supabase/supabase-js';
 import React from 'react';
 import appConfig from '../config.json';
+
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzQ2MjIwMywiZXhwIjoxOTU5MDM4MjAzfQ.HeKMfL5xgc1aASWwrrN-W-wM4MaK0GQL0Ap2auVyxWY'
+const SUPABASE_URL = 'https://ogcqqwymlrgyecsdaghw.supabase.co'
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+
+// const dadosDoSupabase = supabaseClient
+//     .from('Mensagens')
+//     .select('*') // O asterisco indica a seleção de todos campos
+
+// console.log(dadosDoSupabase) nesse caso ficou meio confuso pois não apresentou nada relevante
+
+
 
 export default function ChatPage() {
     // Sua lógica vai aqui
@@ -18,21 +32,63 @@ export default function ChatPage() {
 
 
     //Sua lógica vai aqui
+
+
     const [mensagem, setMensagem] = React.useState(''); 
     const [ListaMensagens, setListaMensagens] = React.useState([])
 
+
+    function supabaseMensagens(mensagem){
+        supabaseClient
+            .from('Mensagens')
+            .insert([
+                mensagem
+            ]).then(({ data }) =>{
+                console.log('Testando', mensagem)
+
+                setListaMensagens([
+                    data[0],
+                    ...ListaMensagens, //Os 3 pontos indica 'espalhar' os elementos do array, evitando algum conflito de duplicidade
+                ])
+            })
+
+    }
+
+    React.useEffect(() => {
+        supabaseClient
+        .from('Mensagens')
+        .select('*') 
+        .order('id', {ascending: false})
+        .then(({ data }) =>{ //O then nesse caso retornará alguns dados da promessa mais legiveis
+            console.log('dados: ',data)
+            setListaMensagens(data) // { data } assim extrai diretamente o 'data' dados da api (servidor)
+        }, [])
+
+    }, []) // Para tratar coisas que fogem do padrão em determinado componente
+    //O array nesse final indica quando que o supabaseClient irá pegar os dados do servidor de novo, para evitar sobrecarga de dados
+        
     function novaMensagem(novaMsg){
         const mensagem = {
-            id: ListaMensagens.length,
+            //id: ListaMensagens.length + 1,
             de: 'FelipeSaimon',
             text: novaMsg
         }
-        setListaMensagens([
-            mensagem,
-            ...ListaMensagens, //Os 3 pontos indica 'espalhar' os elementos do array, evitando algum conflito de duplicidade
-        ])
+
+        supabaseMensagens(mensagem)
+        
+ 
         setMensagem('')
 
+    }
+
+    function RemoveMensagem(messageToDelete){
+        let newMessageList = ListaMensagens.filter((mensagem)=>{
+            if(mensagem.id !== messageToDelete.id){
+                return mensagem
+            }
+        })
+
+        ListaMensagens(newMessageList)
     }
     return (
         <Box
@@ -185,8 +241,7 @@ function Header() {
 }
 
 function MessageList(props) {
-    const [excluido, setExcluido] = React.useState('');
-    console.log('MessageList', props.ListaMensagens);
+    //console.log('MessageList', props.ListaMensagens);
     return (
         <Box
             tag="ul"
@@ -226,7 +281,7 @@ function MessageList(props) {
                                     display: 'inline-block',
                                     marginRight: '8px',
                                 }}
-                                src={`https://github.com/FelipeSaimon.png`}
+                                src={`https://github.com/${mensagem.de}.png`}
                             /> 
                             <Text tag="strong">
                                 {mensagem.de}
@@ -241,14 +296,8 @@ function MessageList(props) {
                             >
                                 {(new Date().toLocaleDateString())}
                             </Text>
-                            <Button label="apagar" 
-                                onClick={(e) =>{
-                                        this.mensagem({mensagem: this.mensagem.filter(function(mensagem) { 
-                                            return mensagem !== e.target.value 
-                                        })});
-                                    }
-                                }
 
+                            <Button label="apagar" 
                                 styleSheet={{
                                     width: "10%",
                                     height: "63%",
@@ -261,6 +310,8 @@ function MessageList(props) {
                                     mainColorLight: appConfig.theme.colors.primary['700'], //esse n sei bem sorry
                                     mainColorStrong: appConfig.theme.colors.primary['200'], //cor do hover se n me engano
                                   }}
+                                onClick={() => props.onRemove(mensagem)}
+
                             />
                         </Box>
                         {mensagem.text}
