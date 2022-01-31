@@ -82,7 +82,7 @@ export default function PaginaInicial() {
               onSubmit={function(event){
                 event.preventDefault();
                 console.log('Submetido')
-                roteamento.push('/chat')
+                roteamento.push(`/chat?username=${username}`)
                 //Jeito mais cru e tradicional de pular pags
                 //Mas ele recarrega a tela
                 //window.location.href = '/chat'
@@ -151,6 +151,8 @@ export default function PaginaInicial() {
                 type='submit'
                 label='Entrar'
 
+                disabled={username.length < 3}
+
                 fullWidth
                 buttonColors={{
                   contrastColor: appConfig.theme.colors.neutrals["000"],
@@ -184,7 +186,7 @@ export default function PaginaInicial() {
                   borderRadius: '50%',
                   marginBottom: '16px',
                 }}
-                src={`https://github.com/${username}.png`}
+              src={`https://github.com/${username}.png`}
               />
               <Text
                 variant="body4"
